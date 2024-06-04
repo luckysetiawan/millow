@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
 const tokens = (n) => {
-    return ethers.utils.parseUnits(n.toString(), 'ether')
+    return ethers.parseUnits(n.toString(), 'ether');
 }
 
 describe('Escrow', () => {
@@ -19,8 +19,8 @@ describe('Escrow', () => {
         // console.log(await realEstate.getAddress());
 
         // Mint
-        let transaction = await realEstate.connect(seller).mint("https://ipfs.io/ipfs/QmTudSYeM7mz3PkYEWXWqPjomRPHogcMFSq7XAvsvsgAPS")
-        await transaction.wait()
+        let transaction = await realEstate.connect(seller).mint("https://ipfs.io/ipfs/QmTudSYeM7mz3PkYEWXWqPjomRPHogcMFSq7XAvsvsgAPS");
+        await transaction.wait();
 
         const EscrowFactory = await ethers.getContractFactory('Escrow');
         escrow = await EscrowFactory.deploy(
@@ -29,6 +29,14 @@ describe('Escrow', () => {
             inspector.getAddress(),
             lender.getAddress()
         );
+
+        // Approve property
+        transaction = await realEstate.connect(seller).approve(await escrow.getAddress(), 1);
+        await transaction.wait();
+
+        // List property
+        transaction = await escrow.connect(seller).list(1, tokens(10), tokens(5), buyer.getAddress());
+        await transaction.wait();
     })
 
     describe('Deployment', () => {
@@ -46,6 +54,28 @@ describe('Escrow', () => {
     
         it('Returns lender', async () => {
             expect(await escrow.lender()).to.be.equal(await lender.getAddress());
+        })
+    })
+
+    describe('Listing', () => {
+        it('Updates as listed', async () => {
+            expect(await escrow.isListed(1)).to.be.equal(true);
+        })
+
+        it('Updates ownership', async () => {
+            expect(await escrow.getAddress()).to.be.equal(await realEstate.ownerOf(1));
+        })
+        
+        it('Returns buyer', async () => {
+            expect(await escrow.buyer(1)).to.be.equal(await buyer.getAddress());
+        })
+        
+        it('Returns purchase price', async () => {
+            expect(await escrow.purchasePrice(1)).to.be.equal(tokens(10));
+        })
+        
+        it('Returns escrow amount', async () => {
+            expect(await escrow.escrowAmount(1)).to.be.equal(tokens(5));
         })
     })
     
