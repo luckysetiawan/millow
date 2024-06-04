@@ -9,7 +9,7 @@ describe('Escrow', () => {
     let buyer, seller, inspector, lender;
     let realEstate, escrow;
 
-    it('saves the addresses', async () => {
+    beforeEach(async () => {
         // Setup accounts
         [ buyer, seller, inspector, lender ] = await ethers.getSigners();
 
@@ -29,10 +29,24 @@ describe('Escrow', () => {
             inspector.getAddress(),
             lender.getAddress()
         );
-
-        expect(await escrow.nftAddress()).to.be.equal(await realEstate.getAddress());
-        expect(await escrow.seller()).to.be.equal(await seller.getAddress());
-        expect(await escrow.inspector()).to.be.equal(await inspector.getAddress());
-        expect(await escrow.lender()).to.be.equal(await lender.getAddress());
     })
+
+    describe('Deployment', () => {
+        it('Returns NFT address', async () => {
+            expect(await escrow.nftAddress()).to.be.equal(await realEstate.getAddress());
+        })
+    
+        it('Returns seller', async () => {
+            expect(await escrow.seller()).to.be.equal(await seller.getAddress());
+        })
+    
+        it('Returns inspector', async () => {
+            expect(await escrow.inspector()).to.be.equal(await inspector.getAddress());
+        })
+    
+        it('Returns lender', async () => {
+            expect(await escrow.lender()).to.be.equal(await lender.getAddress());
+        })
+    })
+    
 })
