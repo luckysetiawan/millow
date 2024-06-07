@@ -94,5 +94,23 @@ describe('Escrow', () => {
             expect(await escrow.inspectionPassed(1)).to.be.equal(true);
         })
     })
+
+    describe('Approval', () => {
+        it('Updates approval status', async () => {
+            let transaction = await escrow.connect(buyer).approveSale(1);
+            await transaction.wait();
+
+            transaction = await escrow.connect(seller).approveSale(1);
+            await transaction.wait();
+
+            transaction = await escrow.connect(lender).approveSale(1);
+            await transaction.wait();
+
+
+            expect(await escrow.approval(1, buyer.getAddress())).to.be.equal(true);
+            expect(await escrow.approval(1, seller.getAddress())).to.be.equal(true);
+            expect(await escrow.approval(1, buyer.getAddress())).to.be.equal(true);
+        })
+    })
     
 })

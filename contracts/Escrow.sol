@@ -37,6 +37,7 @@ contract Escrow {
     mapping(uint256 => uint256) public escrowAmount;
     mapping(uint256 => address) public buyer;
     mapping(uint256 => bool) public inspectionPassed;
+    mapping(uint256 => mapping(address => bool)) public approval;
 
     constructor(
         address _nftAddress,
@@ -76,6 +77,11 @@ contract Escrow {
         bool _passed
     ) public onlyInspector {
         inspectionPassed[_nftID] = _passed;
+    }
+
+    // Approve Sale
+    function approveSale(uint256 _nftID) public {
+        approval[_nftID][msg.sender] = true;
     }
 
     receive() external payable {}
