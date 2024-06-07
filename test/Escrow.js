@@ -86,5 +86,13 @@ describe('Escrow', () => {
             expect(await escrow.getBalance()).to.be.equal(tokens(5));
         })
     })
+
+    describe('Inspection', () => {
+        it('Updates inspection status', async () => {
+            const transaction = await escrow.connect(inspector).updateInspectionStatus(1, true);
+            await transaction.wait();
+            expect(await escrow.inspectionPassed(1)).to.be.equal(true);
+        })
+    })
     
 })
