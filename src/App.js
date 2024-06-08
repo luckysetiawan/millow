@@ -20,9 +20,10 @@ function App() {
 
   const [account, setAccount] = useState(null);
   const [homes, setHomes] = useState([]);
+  const [home, setHome] = useState({});
+  const [toggle, setToggle] = useState(false);
 
   const loadBlockchainData = async () => {
-    console.log('MASUK');
     const provider = new ethers.BrowserProvider(window.ethereum);
     setProvider(provider);
     const network = await provider.getNetwork();
@@ -53,6 +54,11 @@ function App() {
     loadBlockchainData();
   }, []);
 
+  const togglePop = (home) => {
+    setHome(home);
+    toggle ? setToggle(false) : setToggle(true);
+  }
+
   return (
     <div>
       <Navigation account={account} setAccount={setAccount} />
@@ -65,9 +71,9 @@ function App() {
 
         <div className='cards'>
           {homes.map((home, index) => (
-            <div className='card' key={index}>
+            <div className='card' key={index} onClick={() => togglePop(home)}>
               <div className='card__image'>
-                <img src={home.image} alt="Home" />
+                <img src={home.image} alt={home.name} />
               </div>
               <div className='card__info'>
                 <h4>{home.attributes[0].value} ETH</h4>
@@ -83,6 +89,10 @@ function App() {
         </div>
 
       </div>
+
+      {toggle && (
+        <Home home={home} provider={provider} account={account} escrow={escrow} togglePop={togglePop} />
+      )}
 
     </div>
   );
