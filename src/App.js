@@ -34,10 +34,30 @@ function App() {
   return (
     <div>
 
+      <Navigation account={account} setAccount={setAccount} />
+      <Search />
+
       <div className='cards__section'>
 
-        <Navigation account={account} setAccount={setAccount} />
-        <h3>Welcome to Millow</h3>
+        <h3>Homes for you</h3>
+        <hr />
+
+        <div className='cards'>
+          <div className='card'>
+            <div className='card__image'>
+              <img alt="Home" />
+            </div>
+            <div className='card__info'>
+              <h4>1 ETH</h4>
+              <p>
+                <strong>1</strong> beds |
+                <strong>2</strong> bath |
+                <strong>3</strong> m<sup>2</sup>
+              </p>
+              <p>123 StreetName St</p>
+            </div>
+          </div>
+        </div>
 
       </div>
 
